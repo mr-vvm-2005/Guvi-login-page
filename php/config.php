@@ -60,7 +60,7 @@ try {
     $mongoUri = $_ENV['MONGO_URI'] ?? 'mongodb://127.0.0.1:27017';
     $mongoManager = new MongoDB\Driver\Manager($mongoUri);
     $command = new MongoDB\Driver\Command(['ping' => 1]);
-    $mongoManager->executeCommand('admin', $command);
+    $mongoManager->executeCommand('auth_system', $command);
 } catch (Exception $e) {
     header('Content-Type: application/json', true, 500);
     echo json_encode([
