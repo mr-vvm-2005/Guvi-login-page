@@ -20,17 +20,22 @@ if (file_exists($envPath)) {
 }
 
 $mysqlHost = $_ENV['DB_HOST'] ?? '127.0.0.1';
+$mysqlPort = $_ENV['DB_PORT'] ?? '3306';
 $mysqlDb   = $_ENV['DB_DATABASE'] ?? 'auth_system';
 $mysqlUser = $_ENV['DB_USERNAME'] ?? 'root';
 $mysqlPass = $_ENV['DB_PASSWORD'] ?? '';
 $mysqlChar = 'utf8mb4';
 
-$dsn = "mysql:host=$mysqlHost;dbname=$mysqlDb;charset=$mysqlChar";
+$dsn = "mysql:host=$mysqlHost;port=$mysqlPort;dbname=$mysqlDb;charset=$mysqlChar";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
+
+if (strpos($mysqlHost, 'aivencloud.com') !== false) {
+    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+}
 
 try {
     $pdo = new PDO($dsn, $mysqlUser, $mysqlPass, $options);
