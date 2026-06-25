@@ -65,7 +65,7 @@ try {
     header('Content-Type: application/json', true, 500);
     echo json_encode([
         'success' => false,
-        'message' => 'Database connection failed: MongoDB is offline.',
+        'message' => 'Database connection failed: MongoDB is offline. Error: ' . $e->getMessage(),
         'data' => null
     ]);
     exit;
