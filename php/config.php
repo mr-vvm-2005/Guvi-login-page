@@ -77,6 +77,9 @@ try {
     }
     $redis = new Redis();
     $redisHost = $_ENV['REDIS_HOST'] ?? '127.0.0.1';
+    if (strpos($redisHost, 'upstash.io') !== false && strpos($redisHost, 'tls://') !== 0) {
+        $redisHost = 'tls://' . $redisHost;
+    }
     $redisPort = (int)($_ENV['REDIS_PORT'] ?? 6379);
     $redisPass = $_ENV['REDIS_PASSWORD'] ?? null;
     $redis->connect($redisHost, $redisPort);
