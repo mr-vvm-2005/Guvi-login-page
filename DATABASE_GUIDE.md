@@ -7,8 +7,8 @@ This guide describes how to manage the databases for the Secure Auth & Profile M
 ## 1. Local SQLite Fallback (Auto-Enabled)
 To ensure the application remains **100% online and functional** without requiring manual configuration, a local SQLite database fallback has been implemented in `php/config.php`.
 
-* **How it works**: If the remote MySQL cloud database fails to connect (due to DNS errors, credentials, or host suspension), the PHP backend automatically initializes and connects to a local SQLite database file at `php/database.sqlite`.
-* **Behavior**: Users can register, log in, and perform all authentication operations normally. No external internet or running MySQL service is required on your computer.
+* **How it works**: If the remote MySQL cloud database fails to connect (due to DNS errors, credentials, or host suspension), the PHP backend automatically initializes and connects to a local SQLite database file in the system's temporary directory (`sys_get_temp_dir()`), named `guvi_auth_system.sqlite`.
+* **Behavior**: Users can register, log in, and perform all authentication operations normally. No external internet or running MySQL service is required on your computer. This bypasses permission/file-locking errors that occur when databases are stored inside synced directories like OneDrive.
 
 ---
 

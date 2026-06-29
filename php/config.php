@@ -49,7 +49,8 @@ try {
 } catch (PDOException $e) {
     // If the configured cloud MySQL host is offline or name resolution fails,
     // automatically fall back to SQLite to ensure the application remains functional and full-time online.
-    $sqliteDbFile = __DIR__ . '/database.sqlite';
+    // We use the system temp directory to avoid permission and file-locking issues (especially in synced folders like OneDrive).
+    $sqliteDbFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'guvi_auth_system.sqlite';
     try {
         $pdo = new PDO("sqlite:" . $sqliteDbFile);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
