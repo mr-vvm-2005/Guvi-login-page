@@ -11,3 +11,7 @@
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Databases
+*.sqlite
+database.sqlite

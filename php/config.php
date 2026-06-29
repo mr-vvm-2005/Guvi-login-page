@@ -47,13 +47,30 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 } catch (PDOException $e) {
-    header('Content-Type: application/json', true, 500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Database connection failed: MySQL is offline.',
-        'data' => null
-    ]);
-    exit;
+    // If the configured cloud MySQL host is offline or name resolution fails,
+    // automatically fall back to SQLite to ensure the application remains functional and full-time online.
+    $sqliteDbFile = __DIR__ . '/database.sqlite';
+    try {
+        $pdo = new PDO("sqlite:" . $sqliteDbFile);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        
+        $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            email VARCHAR(100) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+    } catch (PDOException $se) {
+        header('Content-Type: application/json', true, 500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database connection failed: MySQL is offline and SQLite fallback failed. Error: ' . $se->getMessage(),
+            'data' => null
+        ]);
+        exit;
+    }
 }
 
 try {
